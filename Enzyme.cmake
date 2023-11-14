@@ -1,27 +1,15 @@
 cmake_minimum_required(VERSION 3.18.0 FATAL_ERROR)
 
-# iOS Development requires clang
-if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	message(FATAL_ERROR "Enzyme requires the use of clang.")
-endif()
+# iOS Development requires clang (something is wrong with the clang variables when the target is set)
+#k if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	#k message(FATAL_ERROR "Enzyme requires the use of clang.")
+#k endif()
 
-# Check iOS SDK Path
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	# Find SDK Path
-	execute_process(COMMAND xcrun --show-sdk-path --sdk iphoneos
-		OUTPUT_VARIABLE ENZYME_IOS_SDK
-		OUTPUT_STRIP_TRAILING_WHITESPACE
-	)
-else()
-	# Check for environment variable
-	if (EXISTS $ENV{ENZYME_IOS_SDK})
-		set(ENZYME_IOS_SDK $ENV{ENZYME_IOS_SDK})
-	else()
-		message(FATAL_ERROR "Cannot find iOS SDK! Set the ENZYME_IOS_SDK environment variable")
-	endif()
-endif()
 
+# Set to iphoneos sdk
+set(ENZYME_IOS_SDK "/Applications/XCode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk")
 # Configuration stuff
+
 set(CMAKE_OSX_ARCHITECTURES "arm64")
 set(CMAKE_OSX_SYSROOT ${ENZYME_IOS_SDK})
 
@@ -32,7 +20,6 @@ if (NOT EXISTS ${ENZYME_BIN_FOLDER})
 endif()
 
 set(ENZYME_ROOT ${CMAKE_CURRENT_LIST_DIR})
-
 macro(enzyme_setup unzipped_folder binary_name)
 	# Perform checks on the IPA
 	if (NOT DEFINED ENZYME_UNZIPPED_FOLDER)
